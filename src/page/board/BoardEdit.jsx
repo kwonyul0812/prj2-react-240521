@@ -1,11 +1,25 @@
-import {useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Box, Button, FormControl, FormLabel, Input, Spinner, Textarea} from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay,
+  Spinner,
+  Textarea,
+  useDisclosure,
+  useToast
+} from "@chakra-ui/react";
 import axios from "axios";
 
 export function BoardEdit() {
   const {id} = useParams();
   const [board, setBoard] = useState(null);
+  const toast = useToast();
+  const navigate = useNavigate();
+  const {isOpen, onClose, onOpen} = useDisclosure();
 
   useEffect(() => {
     axios.get(`/api/board/${id}`).then((res) => setBoard(res.data));
@@ -16,7 +30,27 @@ export function BoardEdit() {
   }
 
   function handleClickSave() {
-    axios.put(`/api/board/edit`, board);
+    axios.put(`/api/board/edit`, board)
+      .then(() => {
+        toast({
+          status: "success",
+          description: `${board.id}번 게시물이 수정되었습니다.`,
+          position: "top"
+        });
+        navigate(`/board/${board.id}`);
+      })
+      .catch((err) => {
+        if (err.response.status === 400) {
+          toast({
+            status: "error",
+            description: `게시물이 수정되지 않았습니다. 작성한 내용을 확인해주세요.`,
+            position: "top"
+          });
+        }
+      })
+      .finally(() => {
+        onClose();
+      })
   }
 
   return <Box>
@@ -49,5 +83,18 @@ export function BoardEdit() {
         <Button onClick={handleClickSave}>저장</Button>
       </Box>
     </Box>
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay/>
+      <ModalContent>
+        <ModalHeader></ModalHeader>
+        <ModalBody>
+          저장 하시겠습니까?
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>취소</Button>
+          <Button onClick={handleClickSave} colorScheme={"blue"}>확인</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   </Box>;
 }
