@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Box, FormControl, FormLabel, Input, Spinner, Textarea, useToast} from "@chakra-ui/react";
+import {Box, Button, FormControl, FormLabel, Input, Spinner, Textarea, useToast} from "@chakra-ui/react";
 
 export function BoardView() {
   const {id} = useParams();
@@ -23,6 +23,11 @@ export function BoardView() {
         }
       })
   }, []);
+
+
+  function handleClickRemove() {
+    axios.delete(`/api/board/${id}`);
+  }
 
   if (board === null) {
     return <Spinner/>;
@@ -53,6 +58,10 @@ export function BoardView() {
     <Box>
       <FormControl>작성일시</FormControl>
       <Input type={"datetime-local"} value={board.inserted} readOnly/>
+    </Box>
+    <Box>
+      <Button colorScheme={"purple"}>수정</Button>
+      <Button colorScheme={"red"} onClick={handleClickRemove}>삭제</Button>
     </Box>
   </Box>;
 }
