@@ -1,13 +1,25 @@
 import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {Box, Button, FormControl, FormLabel, Input, Spinner, Textarea, useToast} from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay,
+  Spinner,
+  Textarea,
+  useDisclosure,
+  useToast
+} from "@chakra-ui/react";
 
 export function BoardView() {
   const {id} = useParams();
   const [board, setBoard] = useState(null);
   const toast = useToast();
   const navigate = useNavigate();
+  const {isOpen, onClose, onOpen} = useDisclosure();
 
   useEffect(() => {
     axios.get(`/api/board/${id}`)
@@ -61,7 +73,20 @@ export function BoardView() {
     </Box>
     <Box>
       <Button colorScheme={"purple"}>수정</Button>
-      <Button colorScheme={"red"} onClick={handleClickRemove}>삭제</Button>
+      <Button colorScheme={"red"} onClick={onOpen}>삭제</Button>
     </Box>
+
+    <Modal isOpen={isOpen} onClose={onClose}>
+      <ModalOverlay/>
+      <ModalContent>
+        <ModalBody>
+          삭제 하시겠습니까?
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={onClose}>취소</Button>
+          <Button colorScheme={"red"} onClick={onOpen}>확인</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   </Box>;
 }
