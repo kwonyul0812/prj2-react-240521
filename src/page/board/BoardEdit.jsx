@@ -80,7 +80,7 @@ export function BoardEdit() {
         </FormControl>
       </Box>
       <Box>
-        <Button onClick={handleClickSave}>저장</Button>
+        <Button onClick={onOpen}>저장</Button>
       </Box>
     </Box>
     <Modal isOpen={isOpen} onClose={onClose}>
