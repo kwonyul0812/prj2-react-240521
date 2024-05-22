@@ -4,11 +4,12 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Textarea, useToast,
+  Textarea,
+  useToast,
 } from "@chakra-ui/react";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
@@ -20,19 +21,21 @@ export function BoardWrite() {
 
   function handleSaveClick() {
     setLoading(true);
-    axios.post("/api/board/add", {
-      title,
-      content,
-      writer,
-    }).then(() => {
-      toast({
-        description: "새 글이 등록되었습니다.",
-        status: "success",
-        position: "top",
-      });
-      navigate("/");
-    })
-      .catch(e => {
+    axios
+      .post("/api/board/add", {
+        title,
+        content,
+        writer,
+      })
+      .then(() => {
+        toast({
+          description: "새 글이 등록되었습니다.",
+          status: "success",
+          position: "top",
+        });
+        navigate("/");
+      })
+      .catch((e) => {
         const code = e.response.status;
 
         if (code === 400) {
@@ -64,23 +67,28 @@ export function BoardWrite() {
         <Box>
           <FormControl>
             <FormLabel>제목</FormLabel>
-            <Input onChange={(e) => setTitle(e.target.value)}/>
+            <Input onChange={(e) => setTitle(e.target.value)} />
           </FormControl>
         </Box>
         <Box>
           <FormControl>
             <FormLabel>본문</FormLabel>
-            <Textarea onChange={(e) => setContent(e.target.value)}/>
+            <Textarea onChange={(e) => setContent(e.target.value)} />
           </FormControl>
         </Box>
         <Box>
           <FormControl>
             <FormLabel>작성자</FormLabel>
-            <Input onChange={(e) => setWriter(e.target.value)}/>
+            <Input onChange={(e) => setWriter(e.target.value)} />
           </FormControl>
         </Box>
         <Box>
-          <Button isLoading={loading} isDisabled={disableSaveButton} colorScheme={"blue"} onClick={handleSaveClick}>
+          <Button
+            isLoading={loading}
+            isDisabled={disableSaveButton}
+            colorScheme={"blue"}
+            onClick={handleSaveClick}
+          >
             저장
           </Button>
         </Box>
