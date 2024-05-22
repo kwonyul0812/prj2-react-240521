@@ -104,6 +104,22 @@ export function MemberSignup() {
 
   const isCheckedPassword = password === passwordCheck;
 
+  let isDisabled = false;
+
+  if (!isCheckedPassword) {
+    isDisabled = true;
+  }
+
+  if (
+    !(
+      email.trim().length > 0 &&
+      password.trim().length > 0 &&
+      nickName.trim().length > 0
+    )
+  ) {
+    isDisabled = true;
+  }
+
   return (
     <Box>
       <Box>회원 가입</Box>
@@ -154,6 +170,7 @@ export function MemberSignup() {
             isLoading={isLoading}
             colorScheme={"blue"}
             onClick={handleClick}
+            isDisabled={isDisabled}
           >
             가입
           </Button>
