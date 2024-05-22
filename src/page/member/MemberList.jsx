@@ -42,6 +42,7 @@ export function MemberList() {
                 <Td>{member.email}</Td>
                 <Td>{member.nickName}</Td>
                 <Td>{member.inserted}</Td>
+                <Td>{member.signupDateAndTime}</Td>
               </Tr>
             ))}
           </Tbody>
