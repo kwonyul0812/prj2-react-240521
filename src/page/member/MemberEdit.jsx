@@ -72,6 +72,10 @@ export function MemberEdit() {
     isDisableNickNameCheckButton = true;
   }
 
+  if (isCheckedNickName) {
+    isDisableNickNameCheckButton = true;
+  }
+
   let isDisableSaveButton = false;
 
   if (member.password !== passwordCheck) {
@@ -79,6 +83,10 @@ export function MemberEdit() {
   }
 
   if (member.nickName.trim().length === 0) {
+    isDisableSaveButton = true;
+  }
+
+  if (!isCheckedNickName) {
     isDisableSaveButton = true;
   }
 
@@ -142,9 +150,11 @@ export function MemberEdit() {
           <FormControl>별명</FormControl>
           <InputGroup>
             <Input
-              onChange={(e) =>
-                setMember({ ...member, nickName: e.target.value.trim() })
-              }
+              onChange={(e) => {
+                const newNickName = e.target.value.trim();
+                setMember({ ...member, nickName: newNickName });
+                setIsCheckedNickName(newNickName === oldNickName);
+              }}
               value={member.nickName}
             />
             <InputRightElement w={"75px"} mr={1}>
