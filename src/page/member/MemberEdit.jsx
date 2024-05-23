@@ -51,11 +51,28 @@ export function MemberEdit() {
   }, []);
 
   function handleClickSave() {
+    console.log("a");
     axios
       .put("/api/member/modify", { ...member, oldPassword: oldPassword })
-      .then((res) => {})
-      .catch(() => {})
-      .finally(() => {});
+      .then(() => {
+        toast({
+          status: "success",
+          description: "회원정보 수정 완료",
+          position: "top",
+        });
+        navigate(`/member/${id}`);
+      })
+      .catch(() => {
+        toast({
+          status: "error",
+          description: "회원정보 수정 실패",
+          position: "top",
+        });
+      })
+      .finally(() => {
+        onClose();
+        setOldPassword("");
+      });
   }
 
   function handleCheckNinckName() {
@@ -70,7 +87,7 @@ export function MemberEdit() {
         setIsCheckedNickName(false);
       })
       .catch((err) => {
-        if (err.response.status == 404) {
+        if (err.response.status === 404) {
           toast({
             status: "info",
             description: "사용 가능한 닉네임 입니다.",
@@ -113,7 +130,7 @@ export function MemberEdit() {
           <Input
             onChange={(e) => {
               setPassword(e.target.value);
-              setMember({ ...member, password: password });
+              setMember({ ...member, password: e.target.value });
             }}
             placeholder={"암호를 변경하려면 입력하세요"}
           />
@@ -137,7 +154,7 @@ export function MemberEdit() {
           <Input
             onChange={(e) => {
               setNickName(e.target.value.trim());
-              setMember({ ...member, nickName: nickName });
+              setMember({ ...member, nickName: e.target.value.trim() });
             }}
           />
           <InputRightElement w={"75px"} mr={1}>
