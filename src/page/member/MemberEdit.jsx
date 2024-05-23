@@ -52,9 +52,9 @@ export function MemberEdit() {
 
   function handleClickSave() {
     axios
-      .put("/api/member/modify", { ...member, oldPassword })
+      .put("/api/member/modify", { ...member, oldPassword: oldPassword })
       .then((res) => {})
-      .then(() => {})
+      .catch(() => {})
       .finally(() => {});
   }
 
