@@ -1,5 +1,5 @@
-import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Box,
@@ -7,24 +7,29 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Modal, ModalBody, ModalContent, ModalFooter, ModalOverlay,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalOverlay,
   Spinner,
   Textarea,
   useDisclosure,
-  useToast
+  useToast,
 } from "@chakra-ui/react";
 
 export function BoardView() {
-  const {id} = useParams();
+  const { id } = useParams();
   const [board, setBoard] = useState(null);
   const toast = useToast();
   const navigate = useNavigate();
-  const {isOpen, onClose, onOpen} = useDisclosure();
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`/api/board/${id}`)
+    axios
+      .get(`/api/board/${id}`)
       .then((res) => setBoard(res.data))
-      .catch(err => {
+      .catch((err) => {
         if (err.response.status === 404) {
           toast({
             status: "info",
@@ -33,12 +38,16 @@ export function BoardView() {
           });
           navigate("/");
         }
-      })
+      });
   }, []);
 
-
   function handleClickRemove() {
-    axios.delete(`/api/board/${id}`)
+    axios
+      .delete(`/api/board/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then(() => {
         toast({
           status: "success",
@@ -56,56 +65,62 @@ export function BoardView() {
       })
       .finally(() => {
         onClose();
-      })
+      });
   }
 
   if (board === null) {
-    return <Spinner/>;
+    return <Spinner />;
   }
 
-  return <Box>
-    <Box>{board.id}번 게시물</Box>
+  return (
     <Box>
-      <FormControl>
-        <FormLabel>
-          제목
-        </FormLabel>
-        <Input value={board.title} readOnly/>
-      </FormControl>
-    </Box>
-    <Box>
-      <FormControl>
-        <FormLabel>본문</FormLabel>
-        <Textarea value={board.content} readOnly/>
-      </FormControl>
-    </Box>
-    <Box>
-      <FormControl>
-        <FormLabel>작성자</FormLabel>
-        <Input value={board.writer} readOnly/>
-      </FormControl>
-    </Box>
-    <Box>
-      <FormControl>작성일시</FormControl>
-      <Input type={"datetime-local"} value={board.inserted} readOnly/>
-    </Box>
-    <Box>
-      <Button colorScheme={"purple"}
-              onClick={() => navigate(`/edit/${board.id}`)}>수정</Button>
-      <Button colorScheme={"red"} onClick={onOpen}>삭제</Button>
-    </Box>
+      <Box>{board.id}번 게시물</Box>
+      <Box>
+        <FormControl>
+          <FormLabel>제목</FormLabel>
+          <Input value={board.title} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>본문</FormLabel>
+          <Textarea value={board.content} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>
+          <FormLabel>작성자</FormLabel>
+          <Input value={board.writer} readOnly />
+        </FormControl>
+      </Box>
+      <Box>
+        <FormControl>작성일시</FormControl>
+        <Input type={"datetime-local"} value={board.inserted} readOnly />
+      </Box>
+      <Box>
+        <Button
+          colorScheme={"purple"}
+          onClick={() => navigate(`/edit/${board.id}`)}
+        >
+          수정
+        </Button>
+        <Button colorScheme={"red"} onClick={onOpen}>
+          삭제
+        </Button>
+      </Box>
 
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay/>
-      <ModalContent>
-        <ModalBody>
-          삭제 하시겠습니까?
-        </ModalBody>
-        <ModalFooter>
-          <Button onClick={onClose}>취소</Button>
-          <Button colorScheme={"red"} onClick={handleClickRemove}>확인</Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  </Box>;
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalBody>삭제 하시겠습니까?</ModalBody>
+          <ModalFooter>
+            <Button onClick={onClose}>취소</Button>
+            <Button colorScheme={"red"} onClick={handleClickRemove}>
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </Box>
+  );
 }
