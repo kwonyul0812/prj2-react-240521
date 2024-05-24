@@ -35,7 +35,7 @@ export function Navbar() {
       {account.isLoggedIn() && (
         <Box
           onClick={() => navigate(`/member/${account.id}`)}
-          cusrsor={"pointer"}
+          cursor={"pointer"}
           _hover={{
             bgColor: "gray.200",
           }}
