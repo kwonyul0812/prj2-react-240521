@@ -1,4 +1,17 @@
-import { Box, Button, Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Flex,
+  Input,
+  Select,
+  Table,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,6 +19,7 @@ import {
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
+  faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
@@ -14,6 +28,8 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
+  const [searchType, setSearchType] = useState("all");
+  const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -27,6 +43,10 @@ export function BoardList() {
   const pageNumbers = [];
   for (let i = pageInfo.leftPageNumber; i <= pageInfo.rightPageNumber; i++) {
     pageNumbers.push(i);
+  }
+
+  function handleSearchClick() {
+    navigate(`/?type=${searchType}&keyword=${searchKeyword}`);
   }
 
   return (
@@ -61,7 +81,29 @@ export function BoardList() {
           </Tbody>
         </Table>
       </Box>
-      <Box>
+      <Center>
+        <Flex>
+          <Box>
+            <Select onChange={(e) => setSearchType(e.target.value)}>
+              <option value="all">전체</option>
+              <option value="text">글</option>
+              <option value="nickName">작성자</option>
+            </Select>
+          </Box>
+          <Box>
+            <Input
+              onChange={(e) => setSearchKeyword(e.target.value)}
+              plcaeholder="검색어"
+            />
+          </Box>
+          <Box>
+            <Button onClick={handleSearchClick}>
+              <FontAwesomeIcon icon={faMagnifyingGlass} />
+            </Button>
+          </Box>
+        </Flex>
+      </Center>
+      <Center>
         {pageInfo.prevPageNumber && (
           <>
             <Button onClick={() => navigate(`/?page=1`)}>
@@ -99,7 +141,7 @@ export function BoardList() {
             </Button>
           </>
         )}
-      </Box>
+      </Center>
     </Box>
   );
 }
