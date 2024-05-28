@@ -47,6 +47,7 @@ export function BoardEdit() {
         title: board.title,
         content: board.content,
         removeFileList,
+        addFileList,
       })
       .then(() => {
         toast({
@@ -156,7 +157,7 @@ export function BoardEdit() {
               type="file"
               accept="image/*"
               onChange={(e) => {
-                setFiles(e.target.files);
+                setAddFileList(e.target.files);
               }}
             />
             <FormHelperText>
