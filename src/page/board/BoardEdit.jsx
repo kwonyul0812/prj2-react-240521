@@ -1,8 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "axios";
 import {
   Box,
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Image,
@@ -14,15 +16,19 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  Switch,
+  Text,
   Textarea,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import axios from "axios";
+import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export function BoardEdit() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+  const [removeFileList, setRemoveFileList] = useState([]);
   const toast = useToast();
   const navigate = useNavigate();
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -31,13 +37,9 @@ export function BoardEdit() {
     axios.get(`/api/board/${id}`).then((res) => setBoard(res.data));
   }, []);
 
-  if (board === null) {
-    return <Spinner />;
-  }
-
   function handleClickSave() {
     axios
-      .put(`/api/board/edit`, board, {
+      .put("/api/board/edit", board, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -64,6 +66,18 @@ export function BoardEdit() {
       });
   }
 
+  if (board === null) {
+    return <Spinner />;
+  }
+
+  function handleRemoveSwitchChange(name, checked) {
+    if (checked) {
+      setRemoveFileList([...removeFileList, name]);
+    } else {
+      setRemoveFileList(removeFileList.filter((item) => item !== name));
+    }
+  }
+
   return (
     <Box>
       <Box>{board.id}번 게시물 수정</Box>
@@ -87,10 +101,28 @@ export function BoardEdit() {
           </FormControl>
         </Box>
         <Box>
-          {board.files &&
-            board.files.map((file) => (
+          {board.fileList &&
+            board.fileList.map((file) => (
               <Box border={"2px solid black"} m={3} key={file.name}>
-                <Image src={file.src} />
+                <Flex>
+                  <FontAwesomeIcon icon={faTrashCan} />
+                  <Switch
+                    onChange={(e) =>
+                      handleRemoveSwitchChange(file.name, e.target.checked)
+                    }
+                  />
+                  <Text>{file.name}</Text>
+                </Flex>
+                <Box>
+                  <Image
+                    sx={
+                      removeFileList.includes(file.name)
+                        ? { filter: "blur(8px)" }
+                        : {}
+                    }
+                    src={file.src}
+                  />
+                </Box>
               </Box>
             ))}
         </Box>
@@ -101,14 +133,16 @@ export function BoardEdit() {
           </FormControl>
         </Box>
         <Box>
-          <Button onClick={onOpen}>저장</Button>
+          <Button colorScheme={"blue"} onClick={onOpen}>
+            저장
+          </Button>
         </Box>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader></ModalHeader>
-          <ModalBody>저장 하시겠습니까?</ModalBody>
+          <ModalBody>저장하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
             <Button onClick={handleClickSave} colorScheme={"blue"}>
