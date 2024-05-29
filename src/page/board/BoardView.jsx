@@ -14,6 +14,7 @@ import {
   ModalBody,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
   Spacer,
   Spinner,
@@ -29,10 +30,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 export function BoardView() {
   const { id } = useParams();
   const [board, setBoard] = useState(null);
+
   const [like, setLike] = useState({
     like: false,
     count: 0,
   });
+
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const account = useContext(LoginContext);
   const toast = useToast();
@@ -42,9 +45,7 @@ export function BoardView() {
   useEffect(() => {
     axios
       .get(`/api/board/${id}`)
-      .then((res) => {
-        setBoard(res.data);
-      })
+      .then((res) => setBoard(res.data))
       .catch((err) => {
         if (err.response.status === 404) {
           toast({
@@ -95,9 +96,9 @@ export function BoardView() {
       .then((res) => {
         setLike(res.data);
       })
-      .error(() => {})
+      .catch(() => {})
       .finally(() => {
-        isLikeProcessing(false);
+        setIsLikeProcessing(false);
       });
   }
 
@@ -117,7 +118,7 @@ export function BoardView() {
         )}
         {isLikeProcessing && (
           <Box pr={3}>
-            <Spacer />
+            <Spinner />
           </Box>
         )}
       </Flex>
@@ -168,7 +169,8 @@ export function BoardView() {
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalBody>삭제 하시겠습니까?</ModalBody>
+          <ModalHeader></ModalHeader>
+          <ModalBody>삭제하시겠습니까?</ModalBody>
           <ModalFooter>
             <Button onClick={onClose}>취소</Button>
             <Button colorScheme={"red"} onClick={handleClickRemove}>
