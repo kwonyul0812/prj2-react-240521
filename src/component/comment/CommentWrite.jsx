@@ -1,12 +1,14 @@
 import { Box, Button, Textarea, useToast } from "@chakra-ui/react";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { LoginContext } from "../LoginProvider.jsx";
 
 export function CommentWrite({ boardId, isSending, setIsSending }) {
   const [comment, setComment] = useState("");
   const toast = useToast();
+  const account = useContext(LoginContext);
 
   function handleCommentSubmitClick() {
     setIsSending(true);
@@ -31,19 +33,23 @@ export function CommentWrite({ boardId, isSending, setIsSending }) {
 
   return (
     <Box>
-      <Textarea
-        placeholder="댓글을 작성해 보세요"
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      />
-      <Button
-        isDisabled={comment.trim().length === 0}
-        isLoading={isSending}
-        onClick={handleCommentSubmitClick}
-        colorScheme={"blue"}
-      >
-        <FontAwesomeIcon icon={faPaperPlane} />
-      </Button>
+      {account.isLoggedIn() && (
+        <Box>
+          <Textarea
+            placeholder="댓글을 작성해 보세요"
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <Button
+            isDisabled={comment.trim().length === 0}
+            isLoading={isSending}
+            onClick={handleCommentSubmitClick}
+            colorScheme={"blue"}
+          >
+            <FontAwesomeIcon icon={faPaperPlane} />
+          </Button>
+        </Box>
+      )}
     </Box>
   );
 }
