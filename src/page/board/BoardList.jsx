@@ -100,12 +100,15 @@ export function BoardList() {
                 >
                   <Td>{board.id}</Td>
                   <Td>
-                    {board.title}
                     {board.numberOfImages > 0 && (
                       <Badge>
                         <FontAwesomeIcon icon={faImage} />
                         {board.numberOfImages}
                       </Badge>
+                    )}
+                    {board.title}
+                    {board.numberOfComment > 0 && (
+                      <Badge>[{board.numberOfComment}]</Badge>
                     )}
                   </Td>
                   <Td>{board.numberOfLike > 0 && board.numberOfLike}</Td>
