@@ -27,6 +27,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { faComments } from "@fortawesome/free-regular-svg-icons";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
@@ -100,15 +101,18 @@ export function BoardList() {
                 >
                   <Td>{board.id}</Td>
                   <Td>
+                    {board.title}
                     {board.numberOfImages > 0 && (
                       <Badge>
                         <FontAwesomeIcon icon={faImage} />
                         {board.numberOfImages}
                       </Badge>
                     )}
-                    {board.title}
-                    {board.numberOfComment > 0 && (
-                      <Badge>[{board.numberOfComment}]</Badge>
+                    {board.numberOfComments > 0 && (
+                      <Badge>
+                        <FontAwesomeIcon icon={faComments} />
+                        {board.numberOfComments}
+                      </Badge>
                     )}
                   </Td>
                   <Td>{board.numberOfLike > 0 && board.numberOfLike}</Td>
