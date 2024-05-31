@@ -4,6 +4,7 @@ import {
   Button,
   Center,
   Flex,
+  Heading,
   Input,
   Select,
   Table,
@@ -14,17 +15,17 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAngleLeft,
   faAngleRight,
   faAnglesLeft,
   faAnglesRight,
   faHeart,
-  faImage,
+  faImages,
   faMagnifyingGlass,
   faUserPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { faComments } from "@fortawesome/free-regular-svg-icons";
@@ -35,7 +36,7 @@ export function BoardList() {
   const [searchType, setSearchType] = useState("all");
   const [searchKeyword, setSearchKeyword] = useState("");
   const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     axios.get(`/api/board/list?${searchParams}`).then((res) => {
@@ -47,12 +48,12 @@ export function BoardList() {
     setSearchKeyword("");
 
     const typeParam = searchParams.get("type");
-    const keywordParams = searchParams.get("keyword");
+    const keywordParam = searchParams.get("keyword");
     if (typeParam) {
       setSearchType(typeParam);
     }
-    if (keywordParams) {
-      setSearchKeyword(keywordParams);
+    if (keywordParam) {
+      setSearchKeyword(keywordParam);
     }
   }, [searchParams]);
 
@@ -72,19 +73,21 @@ export function BoardList() {
 
   return (
     <Box>
-      <Box>게시물 목록</Box>
-      <Box>
+      <Box mb={10}>
+        <Heading>게시물 목록</Heading>
+      </Box>
+      <Box mb={10}>
         {boardList.length === 0 && <Center>조회 결과가 없습니다.</Center>}
         {boardList.length > 0 && (
           <Table>
             <Thead>
               <Tr>
-                <Th>#</Th>
+                <Th w={20}>#</Th>
                 <Th>TITLE</Th>
-                <Th>
+                <Th w={20}>
                   <FontAwesomeIcon icon={faHeart} />
                 </Th>
-                <Th>
+                <Th w={40}>
                   <FontAwesomeIcon icon={faUserPen} />
                 </Th>
               </Tr>
@@ -104,7 +107,7 @@ export function BoardList() {
                     {board.title}
                     {board.numberOfImages > 0 && (
                       <Badge>
-                        <FontAwesomeIcon icon={faImage} />
+                        <FontAwesomeIcon icon={faImages} />
                         {board.numberOfImages}
                       </Badge>
                     )}
@@ -123,8 +126,8 @@ export function BoardList() {
           </Table>
         )}
       </Box>
-      <Center>
-        <Flex>
+      <Center mb={10}>
+        <Flex gap={1}>
           <Box>
             <Select
               value={searchType}
@@ -139,7 +142,7 @@ export function BoardList() {
             <Input
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
-              plcaeholder="검색어"
+              placeholder="검색어"
             />
           </Box>
           <Box>
@@ -150,43 +153,45 @@ export function BoardList() {
         </Flex>
       </Center>
       <Center>
-        {pageInfo.prevPageNumber && (
-          <>
-            <Button onClick={() => handlePageButtonClick(1)}>
-              <FontAwesomeIcon icon={faAnglesLeft} />
-            </Button>
+        <Flex gap={1}>
+          {pageInfo.prevPageNumber && (
+            <>
+              <Button onClick={() => handlePageButtonClick(1)}>
+                <FontAwesomeIcon icon={faAnglesLeft} />
+              </Button>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAngleLeft} />
+              </Button>
+            </>
+          )}
+          {pageNumbers.map((pageNumber) => (
             <Button
-              onClick={() => handlePageButtonClick(pageInfo.prevPageNumber)}
+              onClick={() => handlePageButtonClick(pageNumber)}
+              key={pageNumber}
+              colorScheme={
+                pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
+              }
             >
-              <FontAwesomeIcon icon={faAngleLeft} />
+              {pageNumber}
             </Button>
-          </>
-        )}
-        {pageNumbers.map((pageNumber) => (
-          <Button
-            onClick={() => handlePageButtonClick(pageNumber)}
-            key={pageNumber}
-            colorScheme={
-              pageNumber === pageInfo.currentPageNumber ? "blue" : "gray"
-            }
-          >
-            {pageNumber}
-          </Button>
-        ))}
-        {pageInfo.nextPageNumber && (
-          <>
-            <Button
-              onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
-            >
-              <FontAwesomeIcon icon={faAngleRight} />
-            </Button>
-            <Button
-              onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
-            >
-              <FontAwesomeIcon icon={faAnglesRight} />
-            </Button>
-          </>
-        )}
+          ))}
+          {pageInfo.nextPageNumber && (
+            <>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.nextPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAngleRight} />
+              </Button>
+              <Button
+                onClick={() => handlePageButtonClick(pageInfo.lastPageNumber)}
+              >
+                <FontAwesomeIcon icon={faAnglesRight} />
+              </Button>
+            </>
+          )}
+        </Flex>
       </Center>
     </Box>
   );
