@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   Box,
+  Heading,
   Spinner,
   Table,
   Tbody,
@@ -26,15 +27,17 @@ export function MemberList() {
 
   return (
     <Box>
-      <Box>회원 목록</Box>
-      <Box>
+      <Box mb={10}>
+        <Heading>회원 목록</Heading>
+      </Box>
+      <Box mb={10}>
         <Table>
           <Thead>
             <Tr>
-              <Th>#</Th>
+              <Th w={20}>#</Th>
               <Th>이메일</Th>
-              <Th>별명</Th>
-              <Th>가입일시</Th>
+              <Th w={"150px"}>별명</Th>
+              <Th w={96}>가입일시</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -48,7 +51,6 @@ export function MemberList() {
                 <Td>{member.id}</Td>
                 <Td>{member.email}</Td>
                 <Td>{member.nickName}</Td>
-                <Td>{member.inserted}</Td>
                 <Td>{member.signupDateAndTime}</Td>
               </Tr>
             ))}
