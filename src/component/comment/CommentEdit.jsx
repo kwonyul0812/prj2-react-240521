@@ -25,7 +25,7 @@ export function CommentEdit({
   isProcessing,
 }) {
   const [commentText, setCommentText] = useState(comment.comment);
-  const { isOpen, onClose, onOpen } = useDisclosure();
+  const { onClose, onOpen, isOpen } = useDisclosure();
   const toast = useToast();
 
   function handleCommentSubmit() {
@@ -35,63 +35,60 @@ export function CommentEdit({
         id: comment.id,
         comment: commentText,
       })
-      .then(() => {})
+      .then(() => {
+        toast({
+          description: "댓글이 수정되었습니다.",
+          position: "top",
+          status: "success",
+        });
+      })
       .catch(() => {})
       .finally(() => {
-        toast({
-          status: "success",
-          description: "댓글 수정 되었습니다.",
-          position: "top",
-        });
-        setIsEditing(false);
         setIsProcessing(false);
+        setIsEditing(false);
       });
   }
 
   return (
-    <Box>
-      <Flex>
-        <Box flex={1}>
-          <Textarea
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-          />
-        </Box>
-        <Box>
-          <Button
-            variant="outline"
-            colorScheme={"gray"}
-            onClick={() => setIsEditing(false)}
-          >
-            <FontAwesomeIcon icon={faXmark} />
-          </Button>
-          <Button
-            onClick={onOpen}
-            variant="outline"
-            colorSchme={"blue"}
-            isLoading={isProcessing}
-          >
-            <FontAwesomeIcon icon={faPaperPlane} />
-          </Button>
-        </Box>
-      </Flex>
+    <Flex>
+      <Box flex={1}>
+        <Textarea
+          value={commentText}
+          onChange={(e) => setCommentText(e.target.value)}
+        />
+      </Box>
+      <Box>
+        <Button
+          variant="outline"
+          colorScheme={"gray"}
+          onClick={() => setIsEditing(false)}
+        >
+          <FontAwesomeIcon icon={faXmark} />
+        </Button>
+        <Button
+          isLoading={isProcessing}
+          onClick={onOpen}
+          variant="outline"
+          colorSchme={"blue"}
+        >
+          <FontAwesomeIcon icon={faPaperPlane} />
+        </Button>
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>댓글수정 확인</ModalHeader>
-          <ModalBody>댓글수정 하시겠습니까?</ModalBody>
+          <ModalHeader>수정 확인</ModalHeader>
+          <ModalBody>댓글을 저장하시겠습니까?</ModalBody>
           <ModalFooter>
-            <Button onClick={onClose}>취소</Button>
-            <Button
-              isLoading={isProcessing}
-              colorScheme={"blue"}
-              onClick={handleCommentSubmit}
-            >
+            <Button colorScheme={"gray"} onClick={onClose}>
+              취소
+            </Button>
+            <Button colorScheme={"blue"} onClick={handleCommentSubmit}>
               확인
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Box>
+    </Flex>
   );
 }
