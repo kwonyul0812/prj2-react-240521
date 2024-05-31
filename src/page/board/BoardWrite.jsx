@@ -24,10 +24,10 @@ export function BoardWrite() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState([]);
-  const toast = useToast();
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const account = useContext(LoginContext);
+  const toast = useToast();
+  const navigate = useNavigate();
 
   function handleSaveClick() {
     setLoading(true);
@@ -51,7 +51,7 @@ export function BoardWrite() {
         if (code === 400) {
           toast({
             status: "error",
-            description: "등록되지 않았습니다. 입력한 내용을 확인하세요",
+            description: "등록되지 않았습니다. 입력한 내용을 확인하세요.",
             position: "top",
           });
         }
@@ -60,7 +60,7 @@ export function BoardWrite() {
   }
 
   let disableSaveButton = false;
-  if (title.length === 0) {
+  if (title.trim().length === 0) {
     disableSaveButton = true;
   }
   if (content.trim().length === 0) {
@@ -102,9 +102,7 @@ export function BoardWrite() {
               multiple
               type="file"
               accept="image/*"
-              onChange={(e) => {
-                setFiles(e.target.files);
-              }}
+              onChange={(e) => setFiles(e.target.files)}
             />
             <FormHelperText>
               총 용량은 10MB, 한 파일은 1MB를 초과할 수 없습니다.
@@ -119,7 +117,7 @@ export function BoardWrite() {
               </CardHeader>
               <CardBody>
                 <Stack divider={<StackDivider />} spacing={4}>
-                  <ul>{fileNameList}</ul>
+                  {fileNameList}
                 </Stack>
               </CardBody>
             </Card>
