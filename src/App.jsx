@@ -1,5 +1,5 @@
 import React from "react";
-import { ChakraProvider } from "@chakra-ui/react";
+import { Box, Button, useColorMode } from "@chakra-ui/react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
@@ -13,6 +13,9 @@ import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSun } from "@fortawesome/free-regular-svg-icons";
+import { faMoon } from "@fortawesome/free-solid-svg-icons"; // axios interceptor 설정
 
 // axios interceptor 설정
 axios.interceptors.request.use((config) => {
@@ -45,12 +48,28 @@ const router = createBrowserRouter([
 ]);
 
 function App(props) {
+  const { toggleColorMode, colorMode } = useColorMode();
+
   return (
-    <LoginProvider>
-      <ChakraProvider>
+    <Box>
+      <LoginProvider>
         <RouterProvider router={router} />
-      </ChakraProvider>
-    </LoginProvider>
+      </LoginProvider>
+
+      <Button
+        position={"absolute"}
+        bottom={4}
+        left={4}
+        borderRadius={"full"}
+        onClick={toggleColorMode}
+      >
+        {colorMode === "dark" ? (
+          <FontAwesomeIcon icon={faSun} />
+        ) : (
+          <FontAwesomeIcon icon={faMoon} />
+        )}
+      </Button>
+    </Box>
   );
 }
 
