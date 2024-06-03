@@ -39,7 +39,7 @@ export function Navbar() {
         <Show below={"lg"}>
           <FontAwesomeIcon icon={faHouse} />
         </Show>
-        <Hide below={"lg"}>HOME</Hide>
+        <Hide below={"lg"}>HOME#$</Hide>
       </Center>
       {account.isLoggedIn() && (
         <Center
